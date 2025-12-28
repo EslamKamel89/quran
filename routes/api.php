@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\QuranController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+
+Route::prefix('/quran')->group(function () {
+    Route::get('/sura-index', [QuranController::class, 'suraIndex']);
+});
