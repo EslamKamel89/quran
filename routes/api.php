@@ -13,4 +13,6 @@ Route::prefix('/quran')->group(function () {
     Route::get('/page/{page}/ayat-sura', [QuranController::class, 'pageAyatSura']);
     Route::get('/juz/{sura}/{aya}', [QuranController::class, 'getJuz']);
     Route::get('/search/{key}', [QuranController::class, 'searchByWord']);
+    Route::get('/details/{suraId}/{key}', [QuranController::class, 'getDetails']);
+    Route::get('/ayat/sura/{suraId}', [QuranController::class, 'getAyaBySuraId']);
 });

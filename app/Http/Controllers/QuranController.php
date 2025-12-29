@@ -204,4 +204,58 @@ class QuranController extends Controller {
             ]);
         }
     }
+
+    public function getDetails($suraId, $key) {
+        try {
+            $data = DB::select("
+            SELECT
+                MAX(words.code) AS text_ar,
+                MAX(sura.sura_ar) AS sura_ar,
+                MAX(words.simple) AS simple,
+                MAX(words.ayat_id) AS ayat_id,
+                MAX(words.page) AS page,
+                MAX(ayat.id) AS ayaId
+            FROM words
+            JOIN ayat
+                ON ayat.ayah = words.ayat_id
+                AND words.sura_id = ayat.sura_id
+            JOIN sura
+                ON sura.id = words.sura_id
+            WHERE words.sura_id = ?
+            AND ayat.simple LIKE ?
+            GROUP BY words.id
+            ORDER BY MAX(words.ayat_id)
+", [$suraId, "%{$key}%"]);
+
+
+            return response()->json([
+                'status' => 200,
+                'data' => $data
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function getAyaBySuraId($suraId) {
+        try {
+            $data = DB::table('ayat')
+                ->where('sura_id', $suraId)
+                ->orderBy('ayah')
+                ->get();
+
+            return response()->json([
+                'status' => 200,
+                'data' => $data
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
 }
