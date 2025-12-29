@@ -335,4 +335,61 @@ class QuranController extends Controller {
             ]);
         }
     }
+
+
+    public function getAyaTextAr($ayaId) {
+        try {
+            $row = DB::table('ayat')
+                ->where('id', $ayaId)
+                ->select('text_ar')
+                ->first();
+
+            if (!$row) {
+                return response()->json([
+                    'status' => 400,
+                    'message' => 'Aya not found'
+                ]);
+            }
+
+            return response()->json([
+                'status' => 200,
+                'data' => [
+                    'text_ar' => $row->text_ar
+                ]
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function suraCount($suraId) {
+        try {
+            $row = DB::table('sura')
+                ->where('id', $suraId)
+                ->select('ayah')
+                ->first();
+
+            if (!$row) {
+                return response()->json([
+                    'status' => 400,
+                    'message' => 'Sura not found'
+                ]);
+            }
+
+            return response()->json([
+                'status' => 200,
+                'data' => [
+                    'count' => (int) $row->ayah
+                ]
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
 }

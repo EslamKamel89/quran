@@ -18,4 +18,6 @@ Route::prefix('/quran')->group(function () {
     Route::get('/words/{suraId}/{ayaId}', [QuranController::class, 'getWordByAyahId']);
     Route::get('/aya/{ayaId}/text-ar', [QuranController::class, 'getAyaTextArByAyaId']);
     Route::get('/aya/{ayaId}/page', [QuranController::class, 'getAyaPage']);
+    Route::get('/aya/{ayaId}/text-arabic', [QuranController::class, 'getAyaTextAr']);
+    Route::get('/sura/{suraId}/count', [QuranController::class, 'suraCount']);
 });
