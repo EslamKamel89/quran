@@ -15,4 +15,6 @@ Route::prefix('/quran')->group(function () {
     Route::get('/search/{key}', [QuranController::class, 'searchByWord']);
     Route::get('/details/{suraId}/{key}', [QuranController::class, 'getDetails']);
     Route::get('/ayat/sura/{suraId}', [QuranController::class, 'getAyaBySuraId']);
+    Route::get('/words/{suraId}/{ayaId}', [QuranController::class, 'getWordByAyahId']);
+    Route::get('/aya/{ayaId}/text-ar', [QuranController::class, 'getAyaTextArByAyaId']);
 });
