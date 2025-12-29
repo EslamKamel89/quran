@@ -129,4 +129,23 @@ class QuranController extends Controller {
             ]);
         }
     }
+
+    public function pageAyatSura($page) {
+        try {
+            $data = DB::table('ayat')
+                ->where('page', $page)
+                ->select('ayah', 'sura_id')
+                ->get();
+
+            return response()->json([
+                'status' => 200,
+                'data' => $data
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
 }
