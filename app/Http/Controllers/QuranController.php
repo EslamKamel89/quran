@@ -307,4 +307,32 @@ class QuranController extends Controller {
             ]);
         }
     }
+
+    public function getAyaPage($ayaId) {
+        try {
+            $row = DB::table('ayat')
+                ->where('id', $ayaId)
+                ->select('page')
+                ->first();
+
+            if (!$row) {
+                return response()->json([
+                    'status' => 400,
+                    'message' => 'Aya not found'
+                ]);
+            }
+
+            return response()->json([
+                'status' => 200,
+                'data' => [
+                    'page' => (int) $row->page
+                ]
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
 }
