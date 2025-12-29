@@ -42,59 +42,85 @@ class QuranController extends Controller {
     public function getFull($page) {
         try {
             $data = DB::select("
-    SELECT
-        words.id AS word_id,
+                SELECT
+                    words.id AS word_id,
 
-        MAX(words.position) AS position,
-        MAX(words.char_type) AS char_type,
-        MAX(words.line) AS line,
-        MAX(words.ayat_id) AS ayaNo,
-        MAX(words.juz) AS juz,
-        MAX(words.sura_id) AS sura_id,
-        MAX(words.code) AS word_ar,
-        MAX(words.page) AS page,
+                    MAX(words.position) AS position,
+                    MAX(words.char_type) AS char_type,
+                    MAX(words.line) AS line,
+                    MAX(words.ayat_id) AS ayaNo,
+                    MAX(words.juz) AS juz,
+                    MAX(words.sura_id) AS sura_id,
+                    MAX(words.code) AS word_ar,
+                    MAX(words.page) AS page,
 
-        MAX(ayat.id) AS ayaId,
+                    MAX(ayat.id) AS ayaId,
 
-        MAX(tag_word.id) AS has_tag,
-        MAX(tags.id) AS tag_id,
+                    MAX(tag_word.id) AS has_tag,
+                    MAX(tags.id) AS tag_id,
 
-        MAX(videos.url) AS word_video_url,
-        MAX(ayatvideos.url) AS aya_video_url
+                    MAX(videos.url) AS word_video_url,
+                    MAX(ayatvideos.url) AS aya_video_url
 
-    FROM words
+                FROM words
 
-    LEFT JOIN videos
-        ON videos.word_id = words.id
-        AND videos.type = 'tag'
-        AND videos.enabled = 1
+                LEFT JOIN videos
+                    ON videos.word_id = words.id
+                    AND videos.type = 'tag'
+                    AND videos.enabled = 1
 
-    JOIN ayat
-        ON words.sura_id = ayat.sura_id
-        AND words.ayat_id = ayat.ayah
+                JOIN ayat
+                    ON words.sura_id = ayat.sura_id
+                    AND words.ayat_id = ayat.ayah
 
-    LEFT JOIN videos ayatvideos
-        ON ayatvideos.ayat_id = ayat.id
-        AND ayatvideos.type = 'explain'
-        AND ayatvideos.enabled = 1
+                LEFT JOIN videos ayatvideos
+                    ON ayatvideos.ayat_id = ayat.id
+                    AND ayatvideos.type = 'explain'
+                    AND ayatvideos.enabled = 1
 
-    LEFT JOIN tag_word
-        ON tag_word.word_id = words.id
-        AND tag_word.enabled = 1
+                LEFT JOIN tag_word
+                    ON tag_word.word_id = words.id
+                    AND tag_word.enabled = 1
 
-    LEFT JOIN tags
-        ON tags.id = tag_word.tag_id
-        AND tags.enabled = 1
+                LEFT JOIN tags
+                    ON tags.id = tag_word.tag_id
+                    AND tags.enabled = 1
 
-    WHERE words.page = ?
-    GROUP BY words.id
-    ORDER BY words.id
+                WHERE words.page = ?
+                GROUP BY words.id
+                ORDER BY words.id
 ", [$page]);
 
 
             return response()->json([
                 'status' => 200,
                 'data' => $data
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function getSuraByPage($suraId) {
+        try {
+            $sura = DB::table('sura')
+                ->where('id', $suraId)
+                ->select('sura_ar')
+                ->first();
+
+            if (!$sura) {
+                return response()->json([
+                    'status' => 400,
+                    'message' => 'Sura not found'
+                ]);
+            }
+
+            return response()->json([
+                'status' => 200,
+                'data' => $sura
             ]);
         } catch (\Throwable $e) {
             return response()->json([
